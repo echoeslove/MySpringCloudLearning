@@ -1,0 +1,16 @@
+server:
+  port: 9500
+spring:
+  application:
+    name: Service-Kafka
+  #kafka相关参数配置
+  kafka:
+    consumer:
+      group-id: topicGroupId
+      auto-offset-reset: earliest
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+

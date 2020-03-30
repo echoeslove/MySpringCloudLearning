@@ -1,0 +1,28 @@
+server:
+  port: 8080
+
+management:
+  endpoint:
+    health:
+      show-details: always
+    shutdown:
+      enabled: false
+  endpoints:
+    web:
+      exposure:
+        include: "*"
+
+spring:
+  application:
+    name: Gateway-Center
+  cloud:
+    gateway:
+      discovery:
+        locator:
+          enabled: true
+          lowerCaseServiceId: true
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://localhost:8000/eureka/
