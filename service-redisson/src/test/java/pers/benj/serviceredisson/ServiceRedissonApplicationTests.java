@@ -1,4 +1,4 @@
-package pers.benj.serviceredison;
+package pers.benj.serviceredisson;
 
 import java.time.LocalDate;
 import java.util.concurrent.TimeUnit;
@@ -19,7 +19,7 @@ import com.alibaba.fastjson.JSONObject;
 import pers.benj.User;
 
 @SpringBootTest
-class ServiceRedisonApplicationTests {
+class ServiceRedissonApplicationTests {
 
     @Test
     void contextLoads() {}

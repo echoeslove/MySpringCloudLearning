@@ -1,13 +1,13 @@
-package pers.benj.serviceredison;
+package pers.benj.serviceredisson;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class ServiceRedisonApplication {
+public class ServiceRedissonApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(ServiceRedisonApplication.class, args);
+        SpringApplication.run(ServiceRedissonApplication.class, args);
     }
 
 }

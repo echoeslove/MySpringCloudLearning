@@ -1,8 +1,7 @@
-package pers.benj.serviceredison;
+package pers.benj.serviceredisson;
 
 import java.util.BitSet;
 
-import org.redisson.RedissonBitSet;
 import org.redisson.api.RBitSet;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
