@@ -6,11 +6,17 @@ import java.util.concurrent.TimeUnit;
 import org.junit.jupiter.api.Test;
 import org.redisson.api.RBitSet;
 import org.redisson.api.RLock;
+import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.cglib.beans.BeanMap;
 import org.springframework.data.redis.core.RedisCallback;
 import org.springframework.data.redis.core.RedisTemplate;
+
+import com.alibaba.fastjson.JSONObject;
+
+import pers.benj.User;
 
 @SpringBootTest
 class ServiceRedisonApplicationTests {
@@ -22,7 +28,7 @@ class ServiceRedisonApplicationTests {
     private RedissonClient redissonClient;
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private RedisTemplate<String, String> redisTemplate;
 
     @Test
     public void test() {
@@ -37,7 +43,7 @@ class ServiceRedisonApplicationTests {
 
     @Test
     public void test2() {
-        String key = LocalDate.now().toString();
+        String key = "active:" + LocalDate.now().toString();
 
         redisTemplate.execute(
                         (RedisCallback<Boolean>) redisConnection -> redisConnection.setBit(key.getBytes(), 0L, true));
@@ -54,6 +60,30 @@ class ServiceRedisonApplicationTests {
     }
 
     @Test
+    public void test3() {
+        String key = "t_user:user_id:";
+
+        RMap<String, String> map = redissonClient.getMap(key);
+        User user = new User("benj");
+        map.put(String.valueOf(1), JSONObject.toJSONString(user));
+    }
+
+    @Test
+    public void test4() {
+        String key = "t_user:user_id:2";
+        User user = new User("tom");
+
+        BeanMap beanMap1 = BeanMap.create(user);
+
+        redisTemplate.opsForHash().putAll(key, beanMap1);
+
+//        redisTemplate.opsForHash().put(key, "2", JSONObject.toJSONString(user));
+    }
+
+    @Test
+    public void test5() {}
+
+    @Test
     public void testLock() {
         RLock fairLock = redissonClient.getFairLock("FairLock");
         if (!fairLock.tryLock()) {
@@ -68,7 +98,7 @@ class ServiceRedisonApplicationTests {
             TimeUnit.SECONDS.sleep(30);
         } catch (InterruptedException e) {
             e.printStackTrace();
-        }finally {
+        } finally {
             fairLock.unlock();
         }
 
