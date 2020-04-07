@@ -1,6 +1,8 @@
 package pers.benj.serviceredisson;
 
+import java.io.IOException;
 import java.time.LocalDate;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
@@ -11,8 +13,10 @@ import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cglib.beans.BeanMap;
-import org.springframework.data.redis.core.RedisCallback;
-import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.dao.DataAccessException;
+import org.springframework.data.redis.connection.RedisConnection;
+import org.springframework.data.redis.core.*;
+import org.springframework.data.redis.serializer.RedisSerializer;
 
 import com.alibaba.fastjson.JSONObject;
 
@@ -28,7 +32,9 @@ class ServiceRedissonApplicationTests {
     private RedissonClient redissonClient;
 
     @Autowired
-    private RedisTemplate<String, String> redisTemplate;
+    private RedisTemplate<Object, Object> redisTemplate;
+
+
 
     @Test
     public void test() {
@@ -77,11 +83,61 @@ class ServiceRedissonApplicationTests {
 
         redisTemplate.opsForHash().putAll(key, beanMap1);
 
-//        redisTemplate.opsForHash().put(key, "2", JSONObject.toJSONString(user));
+        // redisTemplate.opsForHash().put(key, "2", JSONObject.toJSONString(user));
     }
 
     @Test
-    public void test5() {}
+    public void test5() {
+        String key = "t_user:user_id";
+
+        List<String> result = new ArrayList<>();
+
+        try {
+            Cursor<Map.Entry<Object, Object>> cursor = redisTemplate.opsForHash().scan(key,
+                            ScanOptions.scanOptions().match("*").count(1000).build());
+            while (cursor.hasNext()) {
+                Object key1 = cursor.next().getKey();
+                Object valueSet = cursor.next().getValue();
+
+                String res = key1 + "-" + valueSet;
+                result.add(res);
+            }
+
+            for (String re : result) {
+                System.out.println(re);
+            }
+            cursor.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    @Test
+    public void test6() {
+        String key = "t_user:user_id:*";
+
+
+        Set<String> keys = (Set<String>) redisTemplate.execute((RedisCallback<Set<String>>) connection -> {
+            Set<String> keysTmp = new HashSet<>();
+            Cursor<byte[]> cursor =
+                            connection.scan(new ScanOptions.ScanOptionsBuilder().match(key).count(1000).build());
+            while (cursor.hasNext()) {
+                keysTmp.add(new String(cursor.next()));
+            }
+            try {
+                cursor.close();
+            } catch (IOException e) {
+                throw new RuntimeException(e.getMessage());
+            }
+
+            return keysTmp;
+
+        });
+
+        System.out.println(keys);
+
+
+    }
 
     @Test
     public void testLock() {
