@@ -25,10 +25,9 @@ public class SpringCloudGatewayServerApplication {
 
     @Bean
     public RouteLocator customRouterLocator(RouteLocatorBuilder routeLocatorBuilder) {
-        return routeLocatorBuilder.routes().route("path_route",
-                        r -> r.path("/service1/*").filters(f -> f.stripPrefix(2).filter(rateLimitByCpuGatewayFilter))
-                                        .uri("http://localhost:9000"))
-                        .route("path_route", r -> r.path("/service2/*").uri("http://localhost:9010")).build();
+        return routeLocatorBuilder.routes()
+                        .route("path_route", r -> r.path("/service1/*").uri("http://localhost:11000"))
+                        .route("path_route", r -> r.path("/service2/*").uri("http://localhost:11010")).build();
     }
 
 }
