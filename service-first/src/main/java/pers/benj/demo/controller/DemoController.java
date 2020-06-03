@@ -18,7 +18,6 @@ public class DemoController {
     @GetMapping("/hello")
     public String sayHello() {
         String s = "Hello from service-1 : " + Thread.currentThread();
-
         logger.debug(s);
 
 
