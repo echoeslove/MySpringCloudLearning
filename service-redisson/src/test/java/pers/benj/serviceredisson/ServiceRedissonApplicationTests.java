@@ -6,22 +6,21 @@ import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 import org.junit.jupiter.api.Test;
-import org.redisson.api.RBitSet;
-import org.redisson.api.RLock;
+import org.junit.runner.RunWith;
 import org.redisson.api.RMap;
 import org.redisson.api.RedissonClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.cglib.beans.BeanMap;
-import org.springframework.dao.DataAccessException;
-import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.data.redis.core.*;
-import org.springframework.data.redis.serializer.RedisSerializer;
-
-import com.alibaba.fastjson.JSONObject;
+import org.springframework.data.redis.core.Cursor;
+import org.springframework.data.redis.core.RedisCallback;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ScanOptions;
+import org.springframework.test.context.junit4.SpringRunner;
 
 import pers.benj.User;
 
+@RunWith(SpringRunner.class)
 @SpringBootTest
 class ServiceRedissonApplicationTests {
 
@@ -36,16 +35,16 @@ class ServiceRedissonApplicationTests {
 
 
 
-    @Test
-    public void test() {
-        RBitSet set = redissonClient.getBitSet("s");
-        set.set(0, true);
-        set.set(1, true);
-        set.set(2, false);
-        set.set(3, true);
-
-        System.out.println(set.toString());
-    }
+//    @Test
+//    public void test() {
+//        RBitSet set = redissonClient.getBitSet("s");
+//        set.set(0, true);
+//        set.set(1, true);
+//        set.set(2, false);
+//        set.set(3, true);
+//
+//        System.out.println(set.toString());
+//    }
 
     @Test
     public void test2() {
@@ -67,11 +66,38 @@ class ServiceRedissonApplicationTests {
 
     @Test
     public void test3() {
-        String key = "t_user:user_id:";
+        redissonClient.getFairLock("AAAA");
 
+        String key = "t_user:user_id:2";
         RMap<String, String> map = redissonClient.getMap(key);
-        User user = new User("benj");
-        map.put(String.valueOf(1), JSONObject.toJSONString(user));
+//        User user = new User("benj");
+//        map.put(String.valueOf(1), JSONObject.toJSONString(user));
+    }
+
+    @Test
+    public void test99() {
+        CustomFunc customFunc = new CustomFunc(true, redissonClient);
+        CustomFunc customFunc2 = new CustomFunc(false, redissonClient);
+
+        Thread t1 = new Thread(customFunc);
+        t1.setName("t1");
+        t1.start();
+        System.out.println("start t1");
+
+        try {
+            TimeUnit.SECONDS.sleep(1L);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        Thread t2 = new Thread(customFunc2);
+        t2.setName("t2");
+        t2.start();
+        System.out.println("start t2");
+
+        while (true) {
+
+        }
     }
 
     @Test
@@ -139,38 +165,38 @@ class ServiceRedissonApplicationTests {
 
     }
 
-    @Test
-    public void testLock() {
-        RLock fairLock = redissonClient.getFairLock("FairLock");
-        if (!fairLock.tryLock()) {
-            System.out.println("other is used");
-            return;
-        }
-        fairLock.lock();
-
-        System.out.println("Function1 execute");
-
-        try {
-            TimeUnit.SECONDS.sleep(30);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        } finally {
-            fairLock.unlock();
-        }
-
-    }
-
-    @Test
-    public void testLock2() {
-        RLock fairLock = redissonClient.getFairLock("FairLock");
-        if (!fairLock.tryLock()) {
-            System.out.println("other is used");
-            return;
-        }
-        fairLock.lock();
-
-        System.out.println("Function2 execute");
-
-        fairLock.unlock();
-    }
+//    @Test
+//    public void testLock() {
+//        RLock fairLock = redissonClient.getFairLock("FairLock");
+//        if (!fairLock.tryLock()) {
+//            System.out.println("other is used");
+//            return;
+//        }
+//        fairLock.lock();
+//
+//        System.out.println("Function1 execute");
+//
+//        try {
+//            TimeUnit.SECONDS.sleep(30);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        } finally {
+//            fairLock.unlock();
+//        }
+//
+//    }
+//
+//    @Test
+//    public void testLock2() {
+//        RLock fairLock = redissonClient.getFairLock("FairLock");
+//        if (!fairLock.tryLock()) {
+//            System.out.println("other is used");
+//            return;
+//        }
+//        fairLock.lock();
+//
+//        System.out.println("Function2 execute");
+//
+//        fairLock.unlock();
+//    }
 }
