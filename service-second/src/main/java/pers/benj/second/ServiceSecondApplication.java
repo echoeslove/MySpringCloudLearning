@@ -1,4 +1,4 @@
-package pers.benj.servicesecond;
+package pers.benj.second;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.SpringBootConfiguration;

@@ -8,6 +8,7 @@ spring:
 #          search-locations: classpath:/properties/
   application:
     name: Service-Second
+
 eureka:
   client:
     service-url:
