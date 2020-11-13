@@ -1,0 +1,9 @@
+server:
+  port: 12000
+spring:
+  application:
+    name: docker-service
+
+logging:
+  level:
+    pers.benj: ${LOG_LEVEL:info}

@@ -37,3 +37,5 @@
 /service-redisson/.mvn/
 /service-kafka/.mvn/
 /service-first/.mvn/
+/service-docker/mvnw
+/service-docker/mvnw.cmd
