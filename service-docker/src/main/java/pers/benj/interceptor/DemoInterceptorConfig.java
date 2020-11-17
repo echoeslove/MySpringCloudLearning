@@ -14,8 +14,12 @@ public class DemoInterceptorConfig implements WebMvcConfigurer {
     @Autowired
     private DemoInterceptor demoInterceptor;
 
+    @Autowired
+    private DemoInterceptor2 demoInterceptor2;
+
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(demoInterceptor).addPathPatterns("/**");
+        registry.addInterceptor(demoInterceptor).addPathPatterns("/**").order(2);
+        registry.addInterceptor(demoInterceptor2).addPathPatterns("/**").order(1);
     }
 }
