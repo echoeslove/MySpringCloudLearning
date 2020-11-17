@@ -15,6 +15,15 @@ public class DemoController {
     @GetMapping("/hello")
     public String sayHello() {
         logger.info("get request");
+
         return "Hello from docker service : " + Thread.currentThread();
+    }
+
+    @GetMapping("/test")
+    public TestSerializeEntity testSerialize() {
+        TestSerializeEntity testSerializeEntity = new TestSerializeEntity();
+        testSerializeEntity.setId(1L);
+
+        return testSerializeEntity;
     }
 }
