@@ -1,0 +1,14 @@
+server:
+  port: 12000
+spring:
+  application:
+    name: mongo-service
+  data:
+    mongodb:
+      uri: mongodb://root:root@127.0.0.1:27017/?authSource=admin
+      database: tarzan_common
+
+
+logging:
+  level:
+    pers.benj: ${LOG_LEVEL:info}
