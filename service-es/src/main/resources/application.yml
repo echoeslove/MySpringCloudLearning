@@ -1,0 +1,9 @@
+server:
+  port: 19000
+spring:
+  application:
+    name: Service-ES
+
+logging:
+  level:
+    pers.benj: ${LOG_LEVEL:debug}
