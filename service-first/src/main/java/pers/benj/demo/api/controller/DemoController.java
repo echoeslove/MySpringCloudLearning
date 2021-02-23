@@ -1,10 +1,12 @@
 package pers.benj.demo.api.controller;
 
+import com.netflix.hystrix.HystrixCommand;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import pers.benj.demo.domain.entity.Person;
 import pers.benj.demo.domain.repository.DemoRepository;
@@ -32,5 +34,14 @@ public class DemoController {
      */
     public Person getMaxPerson() {
         return demoRepository.getMaxAgePerson();
+    }
+
+    @GetMapping("/test/hystrix")
+    public String testHystrix(@RequestParam("times")int times) {
+        HystrixCommand<String> command = new DemoCommand("testCircuitBreaker");
+        String result = "Thread: " + Thread.currentThread() + "  isCircuitBreakerOpen: "
+                        + command.isCircuitBreakerOpen() + "  result: " + command.execute() + " " + times;
+        logger.info(result);
+        return result;
     }
 }
